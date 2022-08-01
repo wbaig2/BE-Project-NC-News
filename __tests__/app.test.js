@@ -18,7 +18,8 @@ describe.only('GET /api', () => {
             .get('/api/topics')
             .expect(200)
     })
-    test.only("Returns an array of topic objects", () => {
+
+    test("Returns an array of topic objects", () => {
       const expectedArray = [
         {
           description: "The man, the Mitch, the legend",
@@ -41,12 +42,13 @@ describe.only('GET /api', () => {
           expect(body.topics).toEqual(expectedArray);
         });
     });
-    test(`Responds with a 400 status when passed a bad route`, () => {
+    test(`Responds with a 404 status when passed a bad route`, () => {
         return request(app)
             .get('/api/topical')
-            .expect(400)
+            .expect(404)
             .then(({ body }) => {
-            expect(body.msg).toBe('Bad request!');
+            expect(body.msg).toBe('Route not found');
         })
+
     })
 })
