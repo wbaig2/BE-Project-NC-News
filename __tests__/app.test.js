@@ -89,7 +89,82 @@ describe('GET /api/articles/:article_id', () => {
         .get("/api/articles/apples")
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Invalid ID requested");
+          expect(body.msg).toBe("Invalid article ID provided");
+        });
+    });
+
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+
+    test("Returns with the updated article when passed in an object in the form { inc_votes: newVote }", () => {
+      const inputObject = { inc_votes: -10 };
+      const expectedOutput = {
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: expect.any(String),
+        votes: 90,
+      };
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(inputObject)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toEqual(expectedOutput);
+        });
+    });
+
+    test("Responds with a status 404 when trying to update an article_id which does not exist", () => {
+        const inputObject = { inc_votes: -10 };
+
+        return request(app)
+        .patch("/api/articles/500")
+        .send(inputObject)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe(
+            "Unable to update article_id 500 - article not found"
+          );
+        });
+    });
+
+    test("Responds with a status 400 when trying to update an article_id which is invalid", () => {
+        const inputObject = { inc_votes: -10 };
+        
+      return request(app)
+        .patch("/api/articles/pineapples")
+        .send(inputObject)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid article ID provided");
+        });
+    });
+    
+    test("Only an object with a key of inc_votes should be passed in", () => {
+      const inputObject = { pandas: -10 };
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(inputObject)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid object submitted");
+        });
+    });
+
+    test("Only an object with a number as the value of inc_votes should be passed in", () => {
+      const inputObject = { inc_votes: 'pandas'};
+
+      return request(app)
+        .patch("/api/articles/1")
+        .send(inputObject)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid object submitted");
         });
     });
 });
