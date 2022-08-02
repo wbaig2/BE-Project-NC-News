@@ -1,7 +1,6 @@
 const express = require('express');
 const db = require('../db/connection');
 const app = require('../app');
-const { rows } = require('pg/lib/defaults');
 
 exports.fetchTopics = () => {
     return db.query('SELECT * FROM topics;')
@@ -22,3 +21,16 @@ exports.fetchArticlesById = (article_id) => {
         return article;
     })
 }
+
+exports.changeVotesByArticleId = (article_id, votes) => {
+  const voteCount = votes["inc_votes"];
+  return db
+    .query(
+      "UPDATE articles SET votes = votes + $1 where article_id = $2 RETURNING *;",
+      [voteCount, article_id]
+    )
+    .then(({ rows }) => {
+      console.log(rows);
+      return rows[0];
+    });
+};
