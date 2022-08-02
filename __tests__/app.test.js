@@ -92,6 +92,7 @@ describe('GET /api/articles/:article_id', () => {
           expect(body.msg).toBe("Invalid article ID provided");
         });
     });
+
 });
 
 describe("PATCH /api/articles/:article_id", () => {
