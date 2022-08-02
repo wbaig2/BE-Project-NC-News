@@ -12,7 +12,7 @@ beforeEach(() => {
     return seed(data);
 })
 
-describe.only('GET /api', () => {
+describe('GET /api', () => {
     test('Returns a status 200 code', () => {
         return request(app)
             .get('/api/topics')
@@ -42,6 +42,7 @@ describe.only('GET /api', () => {
           expect(body.topics).toEqual(expectedArray);
         });
     });
+
     test(`Responds with a 404 status when passed a bad route`, () => {
         return request(app)
             .get('/api/topical')
@@ -52,3 +53,43 @@ describe.only('GET /api', () => {
 
     })
 })
+
+describe('GET /api/articles/:article_id', () => {
+    test('Responds with a single matched article', () => {
+
+        const expectedOutput = {
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: expect.any(String),
+            votes: 100,
+        };
+
+        return request(app)
+            .get('/api/articles/1')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toEqual(expectedOutput)
+            })
+    });
+
+    test('Responds with a status 404 when an article_id does not exist', () => {
+        return request(app)
+            .get('/api/articles/1000')
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("No article found with article_id 1000");
+        })
+    })
+
+    test("Responds with a status 400 when an article_id is invalid", () => {
+      return request(app)
+        .get("/api/articles/apples")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid ID requested");
+        });
+    });
+});
