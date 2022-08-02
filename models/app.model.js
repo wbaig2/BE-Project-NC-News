@@ -1,7 +1,6 @@
 const express = require('express');
 const db = require('../db/connection');
 const app = require('../app');
-const { rows } = require('pg/lib/defaults');
 
 exports.fetchTopics = () => {
     return db.query('SELECT * FROM topics;')

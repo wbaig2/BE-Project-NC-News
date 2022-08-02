@@ -55,7 +55,7 @@ describe('GET /api', () => {
 })
 
 describe('GET /api/articles/:article_id', () => {
-    test('Responds with a single match article', () => {
+    test('Responds with a single matched article', () => {
 
         const expectedOutput = {
             article_id: 1,
@@ -75,7 +75,7 @@ describe('GET /api/articles/:article_id', () => {
             })
     });
 
-    test('Responds with a status 404 when an article does not exist', () => {
+    test('Responds with a status 404 when an article_id does not exist', () => {
         return request(app)
             .get('/api/articles/1000')
             .expect(404)
@@ -83,4 +83,13 @@ describe('GET /api/articles/:article_id', () => {
                 expect(body.msg).toBe("No article found with article_id 1000");
         })
     })
+
+    test("Responds with a status 400 when an article_id is invalid", () => {
+      return request(app)
+        .get("/api/articles/apples")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid ID requested");
+        });
+    });
 });
