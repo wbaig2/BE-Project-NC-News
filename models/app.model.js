@@ -23,14 +23,21 @@ exports.fetchArticlesById = (article_id) => {
 }
 
 exports.changeVotesByArticleId = (article_id, votes) => {
-  const voteCount = votes["inc_votes"];
+    const voteCount = votes["inc_votes"];
+
   return db
     .query(
       "UPDATE articles SET votes = votes + $1 where article_id = $2 RETURNING *;",
       [voteCount, article_id]
     )
-    .then(({ rows }) => {
-      console.log(rows);
-      return rows[0];
+      .then(({ rows }) => {
+        const article = rows[0];
+        if (!article) {
+          return Promise.reject({
+            status: 404,
+            msg: `Unable to update article_id ${article_id} - article not found`,
+          });
+        }
+        return article;
     });
 };
