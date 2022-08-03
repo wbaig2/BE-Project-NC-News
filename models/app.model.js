@@ -44,7 +44,6 @@ exports.changeVotesByArticleId = (article_id, votes) => {
 
 exports.fetchUsers = () => {
     return db.query('SELECT * from users;').then(({ rows: users }) => {
-        console.log(users)
         return users;
     })
 }
