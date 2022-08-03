@@ -10,7 +10,7 @@ exports.fetchTopics = () => {
 }
 
 exports.fetchArticlesById = (article_id) => {
-    return db.query('SELECT * from articles where article_id = $1;', [article_id]).then(({ rows }) => {
+    return db.query('SELECT a.*, COUNT(c.article_id) :: INT AS comment_count from articles a INNER JOIN comments c ON a.article_id = c.article_id where a.article_id = $1 GROUP BY a.article_id;', [article_id]).then(({ rows }) => {
         const article = rows[0];
         if (!article) {
             return Promise.reject({
