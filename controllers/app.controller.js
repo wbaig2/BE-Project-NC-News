@@ -2,7 +2,7 @@ const express = require('express');
 const db = require('../db/connection');
 const app = require('../app');
 
-const { fetchTopics, fetchArticlesById, changeVotesByArticleId } = require('../models/app.model');
+const { fetchTopics, fetchArticlesById, changeVotesByArticleId, fetchUsers } = require('../models/app.model');
 
 
 
@@ -32,5 +32,11 @@ exports.updateVotesByArticleId = (req, res, next) => {
       .then((article) => {
         res.status(200).send({ article });
       })
-      .catch(next);
+    .catch(next);
+}
+
+exports.getUsers = (req, res, next) => {
+    fetchUsers().then((users) => {
+        res.status(200).send({ users });
+    })
 }

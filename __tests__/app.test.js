@@ -168,3 +168,46 @@ describe("PATCH /api/articles/:article_id", () => {
         });
     });
 });
+
+describe('GET /api/users', () => {
+    test('Returns a status 200', () => {
+        return request(app)
+        .get("/api/users")
+        .expect(200)
+    })
+
+    test('Returns an array of users', () => {
+        const expectedArray = [
+       {
+         "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+         "name": "jonny",
+         "username": "butter_bridge",
+        },
+       
+       {
+         "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+         "name": "sam",
+         "username": "icellusedkars",
+       },
+        
+        {
+         "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+         "name": "paul",
+         "username": "rogersop",
+       },
+       
+        {
+         "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+         "name": "do_nothing",
+         "username": "lurker",
+        },
+    ];
+        
+        return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+            expect(body.users).toEqual(expectedArray)
+        })
+    })
+})

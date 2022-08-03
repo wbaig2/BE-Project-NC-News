@@ -41,3 +41,9 @@ exports.changeVotesByArticleId = (article_id, votes) => {
         return article;
     });
 };
+
+exports.fetchUsers = () => {
+    return db.query('SELECT * from users;').then(({ rows: users }) => {
+        return users;
+    })
+}
