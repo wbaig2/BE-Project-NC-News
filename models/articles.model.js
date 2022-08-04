@@ -1,12 +1,10 @@
-const express = require('express');
 const db = require('../db/connection');
-const app = require('../app');
 
-exports.fetchTopics = () => {
-    return db.query('SELECT * FROM topics;')
-        .then(({ rows: topics }) => {
-            return topics;
-        })
+exports.fetchArticles = () => {
+  return db.query('SELECT a.*, COUNT(c.article_id) :: INT AS comment_count from articles a LEFT JOIN comments c ON a.article_id = c.article_id GROUP BY a.article_id ORDER BY a.created_at desc;').then(({ rows: articles }) => {
+    console.log(articles)
+    return articles;
+  })
 }
 
 exports.fetchArticlesById = (article_id) => {
@@ -18,6 +16,7 @@ exports.fetchArticlesById = (article_id) => {
                 msg: `No article found with article_id ${article_id}`
             })
         }
+        
         return article;
     })
 }
@@ -41,9 +40,3 @@ exports.changeVotesByArticleId = (article_id, votes) => {
         return article;
     });
 };
-
-exports.fetchUsers = () => {
-    return db.query('SELECT * from users;').then(({ rows: users }) => {
-        return users;
-    })
-}
