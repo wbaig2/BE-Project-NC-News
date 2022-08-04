@@ -1,16 +1,11 @@
-const express = require('express');
-const db = require('../db/connection');
-const app = require('../app');
+const { fetchArticles, fetchArticlesById, changeVotesByArticleId } = require('../models/articles.model');
 
-const { fetchTopics, fetchArticlesById, changeVotesByArticleId, fetchUsers } = require('../models/app.model');
+exports.getArticles = (req, res, next) => {
+    fetchArticles().then((articles) => {
+      res.status(200).send({ articles });
+    });
+  };
 
-
-
-exports.getTopics = (req, res) => {
-    fetchTopics().then((topics) => {
-        res.status(200).send({ topics })
-        })  
-}
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
@@ -33,10 +28,4 @@ exports.updateVotesByArticleId = (req, res, next) => {
         res.status(200).send({ article });
       })
     .catch(next);
-}
-
-exports.getUsers = (req, res, next) => {
-    fetchUsers().then((users) => {
-        res.status(200).send({ users });
-    })
 }

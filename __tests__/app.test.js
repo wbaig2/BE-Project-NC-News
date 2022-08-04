@@ -54,26 +54,54 @@ describe('GET /api', () => {
     })
 })
 
-describe('GET /api/articles/:article_id', () => {
-    test('Responds with a single matched article', () => {
-
-        const expectedOutput = {
-          article_id: 1,
-          title: expect.any(String),
-          topic: expect.any(String),
-          author: expect.any(String),
-          body: expect.any(String),
-          created_at: expect.any(String),
-          votes: expect.any(Number),
-          comment_count: expect.any(Number),
-        };
-
-        return request(app)
-            .get('/api/articles/1')
-            .expect(200)
-            .then(({ body }) => {
-                expect(body.article).toEqual(expect.objectContaining(expectedOutput))
+describe("GET /api/articles", () => {
+  test("Responds with an array of article objects, sorted in descending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(12);
+        expect(articles).toBeSortedBy('created_at', {descending: true});
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
             })
+          );
+        });
+      });
+  });
+});
+
+describe('GET /api/articles/:article_id', () => {
+    test("Responds with a single matched article", () => {
+
+      const expectedOutput = {
+        article_id: 1,
+        title: expect.any(String),
+        topic: expect.any(String),
+        author: expect.any(String),
+        body: expect.any(String),
+        created_at: expect.any(String),
+        votes: expect.any(Number),
+        comment_count: expect.any(Number),
+      };
+
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toEqual(expect.objectContaining(expectedOutput));
+        });
     });
 
     test('Responds with a status 404 when an article_id does not exist', () => {
@@ -213,3 +241,26 @@ describe('GET /api/users', () => {
         })
     })
 })
+
+describe('GET /api/articles/:article_id', () => {
+    test('Responds with a single matched article, including the number of comments', () => {
+
+        const expectedOutput = {
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 100,
+          comment_count: expect.any(Number),
+        };
+
+        return request(app)
+            .get('/api/articles/1')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article).toEqual(expectedOutput)
+            })
+    });
+});

@@ -1,10 +1,15 @@
 const express = require('express');
 const app = express();
-const { getTopics, getArticleById, updateVotesByArticleId, getUsers } = require('./controllers/app.controller')
+
+const { getTopics } = require("./controllers/topics.controller");
+const { getArticles, getArticleById, updateVotesByArticleId } = require("./controllers/articles.controller");
+const { getUsers } = require("./controllers/users.controller");
 
 app.use(express.json());
 
 app.get('/api/topics', getTopics);
+
+app.get('/api/articles', getArticles);
 
 app.get('/api/articles/:article_id', getArticleById);
 
@@ -17,7 +22,6 @@ app.all("/*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log(err);
   
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
