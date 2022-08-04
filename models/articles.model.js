@@ -2,7 +2,6 @@ const db = require('../db/connection');
 
 exports.fetchArticles = () => {
   return db.query('SELECT a.*, COUNT(c.article_id) :: INT AS comment_count from articles a LEFT JOIN comments c ON a.article_id = c.article_id GROUP BY a.article_id ORDER BY a.created_at desc;').then(({ rows: articles }) => {
-    console.log(articles)
     return articles;
   })
 }

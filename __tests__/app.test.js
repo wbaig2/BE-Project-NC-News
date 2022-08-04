@@ -264,3 +264,47 @@ describe('GET /api/articles/:article_id', () => {
             })
     });
 });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("Responds with an array of comments when an article_id is matched", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(11);
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_id: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+
+  test("Responds with a status 404 when an article_id does not exist", () => {
+    return request(app)
+      .get("/api/articles/1000/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("No comments found for article_id 1000 - article_id does not exist");
+      });
+  });
+
+  test("Responds with a status 400 when an article_id is invalid", () => {
+    return request(app)
+      .get("/api/articles/apples/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid article ID provided");
+      });
+  });
+
+});
