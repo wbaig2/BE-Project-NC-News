@@ -1,4 +1,5 @@
-const { fetchCommentsByArticleId, addCommentByArticleId} = require('../models/comments.model');
+const { fetchCommentsByArticleId, addCommentByArticleId } = require('../models/comments.model');
+const { checkIfArticleIdExists, checkIfUsernameExists } = require("../db/seeds/utils");
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
@@ -12,8 +13,17 @@ exports.postCommentByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const body = req.body;
   
-  addCommentByArticleId(article_id, body).then((comment) => {
-    res.status(201).send({ comment });
-  }).catch(next);
+  checkIfArticleIdExists(article_id)
+    .then(() => {
+      checkIfUsernameExists(body.username)
+        .then(() => {
+          console.log(body.username);
+            addCommentByArticleId(article_id, body).then((comment) => {
+            res.status(201).send({ comment });
+          });
+        })
+        .catch(next);
+    })
+    .catch(next);
 
 }

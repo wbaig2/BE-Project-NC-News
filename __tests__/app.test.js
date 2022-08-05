@@ -341,6 +341,21 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   })
 
+  test("Responds with a status 400 when an invalid article_id is provided", () => {
+    const newComment = {
+      username: "lurker",
+      body: "I like lurking and I cannot lie",
+    };
+
+    return request(app)
+      .post("/api/articles/bananas/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid article ID provided");
+      });
+  });
+
   test("Responds with a status 404 when an article_id does not exist", () => {
     const newComment = {
       username: "lurker",
@@ -356,18 +371,18 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 
-  test("Responds with a status 400 when an article_id is provided", () => {
+  test("Responds with a status 404 when the username provided does not exist", () => {
     const newComment = {
-      username: "lurker",
+      username: "spiderman",
       body: "I like lurking and I cannot lie",
     };
 
     return request(app)
-      .post("/api/articles/bananas/comments")
+      .post("/api/articles/1/comments")
       .send(newComment)
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Invalid article ID provided");
+        expect(body.msg).toBe("Username not found");
       });
   });
 
