@@ -282,11 +282,17 @@ describe("GET /api/articles/:article_id/comments", () => {
               body: expect.any(String),
               created_at: expect.any(String),
               votes: expect.any(Number),
-              article_id: expect.any(Number),
+              article_id: 1,
             })
           );
         });
       });
+  });
+
+  test("Responds with a status 200 when a valid article_id does not have any comments", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
   });
 
   test("Responds with a status 404 when an article_id does not exist", () => {
@@ -294,7 +300,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .get("/api/articles/1000/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("No comments found for article_id 1000 - article_id does not exist");
+        expect(body.msg).toBe("Article not found");
       });
   });
 
