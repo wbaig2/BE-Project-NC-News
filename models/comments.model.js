@@ -6,9 +6,19 @@ exports.fetchCommentsByArticleId = (article_id) => {
 
     if (comments.length === 0) {
       return checkIfArticleIdExists(article_id)
-
     }
-    
+
     return comments;
   })
 };
+
+exports.addCommentByArticleId = (article_id, newComment) => {
+  const { body, username } = newComment;
+  
+  return db.query('INSERT INTO comments (body, article_id, author) VALUES($1, $2, $3) RETURNING *;', [body, article_id, username])
+    .then(({ rows }) => {
+
+      return rows[0];
+  })
+
+}

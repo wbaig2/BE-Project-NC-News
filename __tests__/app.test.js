@@ -314,3 +314,61 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 
 });
+
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test('Responds with the comment when a comment is posted with a matching article_id', () => {
+    const newComment = {
+      username: 'lurker',
+      body: 'I like lurking and I cannot lie',
+    };
+    
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            author: "lurker",
+            body: "I like lurking and I cannot lie",
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_id: 1,
+          })
+        );
+      });
+  })
+
+  test("Responds with a status 404 when an article_id does not exist", () => {
+    const newComment = {
+      username: "lurker",
+      body: "I like lurking and I cannot lie",
+    };
+
+    return request(app)
+      .post("/api/articles/500/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      });
+  });
+
+  test("Responds with a status 400 when an article_id is provided", () => {
+    const newComment = {
+      username: "lurker",
+      body: "I like lurking and I cannot lie",
+    };
+
+    return request(app)
+      .post("/api/articles/bananas/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid article ID provided");
+      });
+  });
+
+});
