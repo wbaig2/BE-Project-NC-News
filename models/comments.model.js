@@ -1,5 +1,5 @@
 const db = require("../db/connection");
-const { checkIfArticleIdExists, checkIfUsernameExists, checkExists } = require("../db/seeds/utils");
+const { checkIfArticleIdExists } = require("../db/seeds/utils");
 
 exports.fetchCommentsByArticleId = (article_id) => {
   return db.query("SELECT * FROM comments where article_id = $1;", [article_id]).then(({ rows: comments }) => {
