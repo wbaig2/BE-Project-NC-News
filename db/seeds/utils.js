@@ -30,8 +30,20 @@ exports.checkIfArticleIdExists = async (article_id) => {
   );
 
   if (dbOutput.rows.length === 0) {
-    
     return Promise.reject({ status: 404, msg: "Article not found" });
+  }
+};
+
+exports.checkIfUsernameExists = async (username) => {
+
+  const dbOutput = await db.query(
+    "SELECT * FROM users WHERE username = $1;",
+    [username]
+  );
+  
+  if (dbOutput.rows.length === 0) {
+    
+    return Promise.reject({ status: 404, msg: "Username not found" });
   }
 
 };
