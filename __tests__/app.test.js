@@ -386,4 +386,19 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 
+  test("Responds with a status 404 when the body (comment) is empty", () => {
+    const newComment = {
+      username: "lurker",
+      body: "",
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("No comment provided");
+      });
+  });
+
 });
