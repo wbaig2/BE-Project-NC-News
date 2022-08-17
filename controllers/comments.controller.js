@@ -1,5 +1,5 @@
-const { fetchCommentsByArticleId, addCommentByArticleId } = require('../models/comments.model');
-const { checkIfArticleIdExists, checkIfUsernameExists } = require("../db/seeds/utils");
+const { fetchCommentsByArticleId, addCommentByArticleId, removeCommentByCommentId } = require('../models/comments.model');
+const { checkIfArticleIdExists, checkIfUsernameExists, checkIfCommentIdExists} = require("../db/seeds/utils");
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
@@ -30,3 +30,13 @@ exports.postCommentByArticleId = (req, res, next) => {
         }).catch(next);
     }).catch(next);
 }
+
+
+exports.deleteCommentByCommentId = (req, res, next) => {
+  const { comment_id } = req.params;
+
+    removeCommentByCommentId(comment_id).then((comment) => {
+        res.status(204).send({ comment });
+    }).catch(next)
+    
+};

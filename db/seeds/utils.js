@@ -47,3 +47,14 @@ exports.checkIfUsernameExists = async (username) => {
   }
 
 };
+
+exports.checkIfCommentIdExists = async (comment_id) => {
+  const dbOutput = await db.query(
+    "SELECT * FROM comments WHERE comment_id = $1;",
+    [comment_id]
+  );
+
+  if (dbOutput.rows.length === 0) {
+    return Promise.reject({ status: 404, msg: "Comment not found" });
+  }
+};

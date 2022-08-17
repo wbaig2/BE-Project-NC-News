@@ -1,10 +1,16 @@
 const { fetchArticles, fetchArticlesById, changeVotesByArticleId } = require('../models/articles.model');
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles().then((articles) => {
+  const { sort_by } = req.query;
+  const { order_by } = req.query;
+  const filter_by = req.query.topic;
+
+  fetchArticles(sort_by, order_by, filter_by)
+    .then((articles) => {
       res.status(200).send({ articles });
-    }).catch(next);
-  };
+    })
+    .catch(next);
+};
 
 
 exports.getArticleById = (req, res, next) => {

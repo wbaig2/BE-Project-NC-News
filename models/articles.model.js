@@ -1,7 +1,31 @@
 const db = require('../db/connection');
 
-exports.fetchArticles = () => {
-  return db.query('SELECT a.*, COUNT(c.article_id) :: INT AS comment_count from articles a LEFT JOIN comments c ON a.article_id = c.article_id GROUP BY a.article_id ORDER BY a.created_at desc;').then(({ rows: articles }) => {
+exports.fetchArticles = (sort_by, order_by, filter_by) => {
+  let qryString = 'SELECT a.*, COUNT(c.article_id) :: INT AS comment_count from articles a LEFT JOIN comments c ON a.article_id = c.article_id ';
+
+  if (filter_by === undefined) {
+    const whereClause = '';
+    qryString += whereClause;
+  } else if (!["mitch", "cats", "paper"].includes(filter_by)) {
+      return Promise.reject({ status: 400, msg: "Invalid filter" });
+  } else {
+    const whereClause = `WHERE a.topic = '${filter_by}'`;
+    qryString += whereClause
+  }
+
+  if (sort_by === undefined) {
+    sort_by = 'created_at';
+  } else if (!["article_id", "title", "topic", "author", "created_at", "votes"].includes(sort_by)) {
+      return Promise.reject({ status: 400, msg: "Invalid sort query" });
+  }
+
+  if (order_by === undefined) {
+    order_by = 'desc';
+  } else if (!["asc", "desc"].includes(order_by)) {
+    return Promise.reject({ status: 400, msg: "Invalid order query" });
+  }
+
+  return db.query(qryString + `GROUP BY a.article_id ORDER BY ${sort_by} ${order_by};`).then(({ rows: articles }) => {
     return articles;
   })
 }
