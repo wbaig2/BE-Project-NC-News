@@ -6,8 +6,6 @@ exports.fetchArticles = (sort_by, order_by, filter_by) => {
   if (filter_by === undefined) {
     const whereClause = '';
     qryString += whereClause;
-  } else if (!["mitch", "cats", "paper"].includes(filter_by)) {
-      return Promise.reject({ status: 400, msg: "Invalid filter" });
   } else {
     const whereClause = `WHERE a.topic = '${filter_by}'`;
     qryString += whereClause
