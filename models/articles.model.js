@@ -13,7 +13,7 @@ exports.fetchArticles = (sort_by, order_by, filter_by) => {
 
   if (sort_by === undefined) {
     sort_by = 'created_at';
-  } else if (!["article_id", "title", "topic", "author", "created_at", "votes"].includes(sort_by)) {
+  } else if (!["article_id", "title", "topic", "author", "created_at", "votes", "comment_count"].includes(sort_by)) {
       return Promise.reject({ status: 400, msg: "Invalid sort query" });
   }
 
