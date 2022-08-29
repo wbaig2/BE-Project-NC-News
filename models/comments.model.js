@@ -2,13 +2,20 @@ const db = require("../db/connection");
 const { checkIfArticleIdExists, checkIfCommentIdExists } = require("../db/seeds/utils");
 
 exports.fetchCommentsByArticleId = (article_id) => {
-  return db.query("SELECT * FROM comments c INNER JOIN users u ON c.author = u.author where c.article_id = $1 ORDER BY c.created_at desc;", [article_id]).then(({ rows: comments }) => {
-    if (comments.length === 0) {
-      return checkIfArticleIdExists(article_id)
-    }
-    return comments;
-  })
+  return db
+    .query(
+      "SELECT c.comment_id, c.body, c.article_id, c.author, c.votes, c.created_at, u.name, u.avatar_url FROM comments c INNER JOIN users u ON c.author = u.username where c.article_id = $1 ORDER BY c.created_at desc;",
+      [article_id]
+    )
+    .then(({ rows: comments }) => {
+      if (comments.length === 0) {
+        return checkIfArticleIdExists(article_id);
+      }
+      return comments;
+    });
 };
+
+c.comment_id, c.body, c.article_id, c.author, c.votes, c.created_at, u.name, u.avatar_url
 
 exports.addCommentByArticleId = (article_id, newComment) => {
   const { body, username } = newComment;
