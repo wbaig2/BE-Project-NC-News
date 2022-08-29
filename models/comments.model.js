@@ -15,8 +15,6 @@ exports.fetchCommentsByArticleId = (article_id) => {
     });
 };
 
-c.comment_id, c.body, c.article_id, c.author, c.votes, c.created_at, u.name, u.avatar_url
-
 exports.addCommentByArticleId = (article_id, newComment) => {
   const { body, username } = newComment;
     return db.query('INSERT INTO comments (body, article_id, author) VALUES($1, $2, $3) RETURNING *;', [body, article_id, username])

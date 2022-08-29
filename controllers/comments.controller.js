@@ -1,5 +1,5 @@
 const { fetchCommentsByArticleId, addCommentByArticleId, removeCommentByCommentId } = require('../models/comments.model');
-const { checkIfArticleIdExists, checkIfUsernameExists, checkIfCommentIdExists} = require("../db/seeds/utils");
+const { checkIfArticleIdExists, checkIfUsernameExists} = require("../db/seeds/utils");
 
 exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
